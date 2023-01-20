@@ -31,17 +31,19 @@ export const getRelatedVideos = async (videoId) => {
   return response.data.items;
 };
 
-export const search = async (query) => {
+export const getSearchVideos = async (query, nextPageToken) => {
   const response = await instance.get('/search', {
     params: {
       part: 'snippet',
-      maxResults: '25',
+      maxResults: '16',
       q: query,
       type: 'video',
+      pageToken: nextPageToken && nextPageToken,
     },
   });
-  return response.data.items;
+  return response.data;
 };
+
 export const getViewCount = async (videoId) => {
   const response = await instance.get('/videos', {
     params: {
@@ -53,6 +55,18 @@ export const getViewCount = async (videoId) => {
     },
   });
   return response.data.items[0].statistics.viewCount;
+};
+
+export const getVideoDuration = async (videoId) => {
+  const response = await instance.get('/videos', {
+    params: {
+      part: 'snippet',
+      part: 'contentDetails',
+      // part: 'statistics',
+      id: videoId,
+    },
+  });
+  return response.data.items[0].contentDetails.duration;
 };
 
 export const getChannelImg = async (channelId) => {
@@ -105,5 +119,16 @@ export const getPlayListItems = async (playListId) => {
       },
     })
     .catch((error) => console.log(error));
+  return response.data.items;
+};
+
+export const getComments = async (videoId) => {
+  const response = await instance.get('/commentThreads', {
+    params: {
+      part: 'snippet',
+      videoId: videoId,
+    },
+  });
+  // console.log(response.data.items);
   return response.data.items;
 };

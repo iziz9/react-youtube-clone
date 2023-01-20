@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { getViewCount, getChannelImg } from '../api/request';
+import { getViewCount, getChannelImg } from '../../api/request';
 import { BsDot } from 'react-icons/bs';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/ko';
 import { useNavigate } from 'react-router-dom';
-import numberToKorean from '../util/numberToKorean';
 import { Tooltip } from 'react-tooltip';
+import numberToKorean from '../../util/numberToKorean';
 
 //발행날짜 라이브러리
 dayjs.extend(relativeTime);
@@ -30,9 +30,8 @@ const VideoCardInfo = ({ video, videoId, type }) => {
     navigate(`/channel/${channelId}`, { state: channelId });
   };
 
-  console.log(channelTitle);
   return (
-    <div className='flex gap-4'>
+    <div className='flex justify-around gap-4 relative'>
       <img src={channelImg} className={related ? 'hidden' : 'rounded-full w-6 h-6'} />
       <div
         className={
@@ -40,31 +39,34 @@ const VideoCardInfo = ({ video, videoId, type }) => {
         }
       >
         <p
-          id={videoId}
+          id={videoId?.videoId}
           className={
             related
-              ? 'w-30 overflow-hidden text-ellipsis text-white text-sm leading-5 line-clamp-1 h-5'
-              : 'text-white line-clamp-2 leading-5 font-bold'
+              ? 'w-30 overflow-hidden text-ellipsis text-white text-sm leading-5 line-clamp-2 h-10'
+              : 'text-white line-clamp-2 leading-5 font-medium'
           }
         >
           {title}
         </p>
         <p
-          id={'channel' + videoId}
+          id={'channel' + videoId.videoId}
           data-tooltip-content={channelTitle}
           onClick={handleClick}
-          className='text-sm font-semibold text-zinc-300 hover:text-white'
+          className={
+            related
+              ? 'text-[12px] text-zinc-300 hover:text-white'
+              : 'text-sm text-zinc-300 hover:text-white'
+          }
         >
           {channelTitle}
         </p>
         <Tooltip
-          anchorId={'channel' + videoId}
-          data-toolip-place='top'
-          data-tooltip-variant='success'
+          anchorId={'channel' + videoId.videoId}
+          // data-toolip-place='top'
           noArrow
-          className='tooltip absolute w-fit z-50 bg-[#696969] text-white'
+          className='tooltip absolute w-fit z-10 bg-[#696969] text-white'
         ></Tooltip>
-        <p className='text-xs flex font-semibold text-zinc-300'>
+        <p className={related ? 'text-[12px] flex text-zinc-300' : 'text-sm flex text-zinc-300'}>
           조회수 {viewCount && numberToKorean(viewCount)}회 <BsDot />{' '}
           {dayjs().to(dayjs(publishedAt))}
         </p>
